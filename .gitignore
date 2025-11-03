@@ -1,0 +1,91 @@
+# Flutter/Dart/Pub related
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# Generated plugin registrants
+**/generated_plugin_registrant.dart
+
+# IntelliJ/Android Studio
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+.history/
+
+# Android
+.gradle/
+**/local.properties
+**/GeneratedPluginRegistrant.java
+**/app/build/
+**/captures/
+*.keystore
+*.jks
+*.apk
+*.aar
+*.ap_
+
+# iOS/macOS
+**/DerivedData/
+**/Pods/
+**/Flutter/ephemeral/
+**/Flutter/App.framework
+**/Flutter/Flutter.framework
+**/Flutter/Flutter.podspec
+**/Flutter/Generated.xcconfig
+**/Runner.xcworkspace/
+**/xcuserdata/
+**/build/
+*.xcuserstate
+*.moved-aside
+*.ipa
+
+# Web
+lib/generated_plugin_registrant.dart
+web/.dart_tool/
+web/.flutter-plugins
+web/.flutter-plugins-dependencies
+web/build/
+
+# Windows
+windows/flutter/ephemeral/
+windows/build/
+
+# Linux
+linux/flutter/ephemeral/
+linux/build/
+
+# macOS
+macos/Flutter/ephemeral/
+macos/build/
+
+# Firebase/Secrets
+firebase_app_id_file.json
+google-services.json
+GoogleService-Info.plist
+*.env
+.env*
+
+# Misc
+*.log
+*.tmp
+*.lock
+*.bak
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Symbolic links and temporary
+.symlinks/
+.tmp/
