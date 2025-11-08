@@ -1,7 +1,7 @@
 import 'dart:ui';
-import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -34,28 +34,28 @@ class AppBottomNavBar extends StatelessWidget {
               _NavItem(
                 index: 0,
                 currentIndex: currentIndex,
-                icon: Iconsax.home,
+                icon: FontAwesomeIcons.solidHouse,
                 label: "Home",
                 onTap: (i) => context.go('/'),
               ),
               _NavItem(
                 index: 1,
                 currentIndex: currentIndex,
-                icon: Iconsax.search_normal_1,
+                icon: FontAwesomeIcons.searchengin,
                 label: "Search",
                 onTap: (i) => context.go('/search'),
               ),
               _NavItem(
                 index: 2,
                 currentIndex: currentIndex,
-                icon: Iconsax.heart,
+                icon: FontAwesomeIcons.solidHeart,
                 label: "Favorites",
                 onTap: (i) => context.go('/favorites'),
               ),
               _NavItem(
                 index: 3,
                 currentIndex: currentIndex,
-                icon: Iconsax.user,
+                icon: FontAwesomeIcons.solidUser,
                 label: "Profile",
                 onTap: (i) => context.go('/profile'),
               ),
