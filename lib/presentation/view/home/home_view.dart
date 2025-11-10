@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/movie_carousel.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -72,21 +74,21 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
 
-          SliverPadding(
-            padding: const EdgeInsets.only(left: 12, right: 12, bottom: 100),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 0.65,
-              ),
-              delegate: SliverChildBuilderDelegate((context, index) {
-                return Image.network(
-                  'https://m.media-amazon.com/images/I/811lT7khIrL._AC_UF894,1000_QL80_.jpg',
-                  fit: BoxFit.cover,
-                );
-              }, childCount: 20),
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 10),
+                MovieCarousel(
+                  imageUrls: const [
+                    'https://upload.wikimedia.org/wikipedia/en/thumb/d/db/The_Matrix.png/250px-The_Matrix.png',
+                    'https://upload.wikimedia.org/wikipedia/en/thumb/d/db/The_Matrix.png/250px-The_Matrix.png',
+                    'https://upload.wikimedia.org/wikipedia/en/thumb/d/db/The_Matrix.png/250px-The_Matrix.png',
+                    'https://upload.wikimedia.org/wikipedia/en/thumb/d/db/The_Matrix.png/250px-The_Matrix.png',
+                    'https://upload.wikimedia.org/wikipedia/en/thumb/d/db/The_Matrix.png/250px-The_Matrix.png',
+                  ],
+                ),
+              ],
             ),
           ),
         ],
