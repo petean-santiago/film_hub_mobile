@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/movie_carousel.dart';
+import '../../widgets/movie_category_list.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -94,7 +95,29 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   Transform.translate(
                     offset: const Offset(0, -120),
-                    child: Text('test'),
+                    child: Column(
+                      spacing: 15,
+                      children: [
+                        MovieCategoryList(
+                          categoryTitle: "Trending Now",
+                          imageUrls: [
+                            'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
+                            'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
+                            'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
+                            'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
+                          ],
+                        ),
+                        MovieCategoryList(
+                          categoryTitle: "Top Rated",
+                          imageUrls: [
+                            'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
+                            'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
+                            'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
+                            'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

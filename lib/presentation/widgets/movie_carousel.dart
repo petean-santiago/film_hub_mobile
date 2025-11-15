@@ -3,6 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../view/shared/movie_detail_view.dart';
+
 class MovieCarousel extends StatefulWidget {
   final List<String> imageUrls;
 
@@ -67,35 +69,53 @@ class _MovieCarouselState extends State<MovieCarousel> {
                         aspectRatio: 2 / 3,
                         child: Stack(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Container(
-                                        color: Colors.grey.shade900,
-                                        child: const Center(
-                                          child: CircularProgressIndicator(
-                                            color: Colors.redAccent,
-                                            strokeWidth: 2,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Container(
-                                      color: Colors.grey.shade900,
-                                      alignment: Alignment.center,
-                                      child: const Icon(
-                                        Icons.broken_image_rounded,
-                                        color: Colors.white38,
-                                        size: 48,
-                                      ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => MovieDetailView(
+                                      imageUrl: backgroundImage,
+                                      index: index,
                                     ),
+                                  ),
+                                );
+                              },
+                              child: Hero(
+                                tag: 'image-poster-$index',
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return Container(
+                                            color: Colors.grey.shade900,
+                                            child: const Center(
+                                              child: CircularProgressIndicator(
+                                                color: Colors.redAccent,
+                                                strokeWidth: 2,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Container(
+                                              color: Colors.grey.shade900,
+                                              alignment: Alignment.center,
+                                              child: const Icon(
+                                                Icons.broken_image_rounded,
+                                                color: Colors.white38,
+                                                size: 48,
+                                              ),
+                                            ),
+                                  ),
+                                ),
                               ),
                             ),
                             if (!isActive)
