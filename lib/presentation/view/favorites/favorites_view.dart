@@ -1,5 +1,7 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:film_hub/presentation/widgets/custom_silver_app_bar.dart';
+import '../../widgets/favorite_item_card.dart';
 
 class FavoritesView extends StatefulWidget {
   const FavoritesView({super.key});
@@ -15,12 +17,14 @@ class _FavoritesViewState extends State<FavoritesView> {
       'poster':
           'https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg',
       'genres': ['Drama', 'Crime'],
+      'description': 'A chemistry teacher turned methamphetamine producer.',
     },
     {
       'title': 'Spirited Away',
       'poster':
           'https://image.tmdb.org/t/p/w500/oRvMaJOmapypFUcQqpgHMZA6qL9.jpg',
       'genres': ['Fantasy', 'Animation'],
+      'description': 'A girl enters a magical world ruled by spirits.',
     },
   ];
 
@@ -30,86 +34,56 @@ class _FavoritesViewState extends State<FavoritesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: ScrollConfiguration(
-        behavior: const ScrollBehavior().copyWith(overscroll: false),
-        child: CustomScrollView(
-          slivers: [
-            CustomSilverAppBar(filters: filters, showFilters: true),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final item = favorites[index];
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  child: Card(
-                    color: Colors.grey.shade900,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 3,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Poster
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12),
-                          ),
-                          child: Image.network(
-                            item['poster'],
-                            width: 100,
-                            height: 150,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item['title'],
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-
-                                Wrap(
-                                  spacing: 8,
-                                  children: item['genres']
-                                      .map<Widget>(
-                                        (g) => Chip(
-                                          label: Text(g),
-                                          labelStyle: const TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                          backgroundColor:
-                                              Colors.blueGrey.shade100,
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }, childCount: favorites.length),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Transform.rotate(
+              angle: 3.14159,
+              child: Image.network(
+                "https://t3.ftcdn.net/jpg/06/52/50/84/360_F_652508416_PMVJMXZMgnpHmlUIoEnV6xlSTojSwiQ3.jpg",
+                fit: BoxFit.cover,
+              ),
             ),
-          ],
-        ),
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+              child: Container(color: Colors.black.withValues(alpha: 0.55)),
+            ),
+          ),
+
+          ScrollConfiguration(
+            behavior: const ScrollBehavior().copyWith(overscroll: false),
+            child: CustomScrollView(
+              slivers: [
+                CustomSilverAppBar(filters: filters, showFilters: true),
+
+                SliverPadding(
+                  padding: const EdgeInsets.only(bottom: 90),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final item = favorites[index];
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        child: FavoriteItemCard(
+                          index: index,
+                          title: item['title'],
+                          posterUrl: item['poster'],
+                          genres: List<String>.from(item['genres']),
+                          description: item['description'] ?? "",
+                        ),
+                      );
+                    }, childCount: favorites.length),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

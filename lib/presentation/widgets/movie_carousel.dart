@@ -97,7 +97,7 @@ class _MovieCarouselState extends State<MovieCarousel> {
                                             color: Colors.grey.shade900,
                                             child: const Center(
                                               child: CircularProgressIndicator(
-                                                color: Colors.redAccent,
+                                                color: Colors.white,
                                                 strokeWidth: 2,
                                               ),
                                             ),

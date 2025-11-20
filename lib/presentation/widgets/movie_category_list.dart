@@ -57,7 +57,7 @@ class MovieCategoryList extends StatelessWidget {
                               child: const Center(
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: Colors.redAccent,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
