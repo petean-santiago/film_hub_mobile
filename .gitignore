@@ -76,6 +76,7 @@ google-services.json
 GoogleService-Info.plist
 *.env
 .env*
+assets/env/.env
 
 # Misc
 *.log
