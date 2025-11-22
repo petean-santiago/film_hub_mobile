@@ -54,16 +54,19 @@ class FavoriteItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Poster
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomLeft: Radius.circular(16),
-                  ),
-                  child: Image.network(
-                    posterUrl,
-                    width: 100,
-                    height: 150,
-                    fit: BoxFit.cover,
+                Hero(
+                  tag: 'image-poster-$index',
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      bottomLeft: Radius.circular(16),
+                    ),
+                    child: Image.network(
+                      posterUrl,
+                      width: 100,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
 
