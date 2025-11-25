@@ -1,5 +1,7 @@
 import 'package:film_hub/presentation/widgets/custom_silver_app_bar.dart';
 import 'package:flutter/material.dart';
+import '../../../data/services/api_client.dart';
+import '../../../data/services/movie_service.dart';
 import '../../widgets/movie_carousel.dart';
 import '../../widgets/movie_category_list.dart';
 
@@ -12,6 +14,18 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final List<String> filters = ["Trending", "Popular", "Top Rated", "Upcoming"];
+  final movieService = MovieService(ApiClient());
+
+  @override
+  void initState() {
+    super.initState();
+    loadPopular();
+  }
+
+  void loadPopular() async {
+    final movies = await movieService.getPopularMovies();
+    print(movies.results[0].title);
+  }
 
   @override
   Widget build(BuildContext context) {

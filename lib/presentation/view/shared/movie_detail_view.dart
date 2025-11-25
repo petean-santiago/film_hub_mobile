@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../providers/shared/movie_detail_provider.dart';
+import '../../../application/providers/shared/movie_detail_provider.dart';
 import '../../widgets/blurred_play_button.dart';
 
 class MovieDetailView extends ConsumerWidget {
