@@ -29,7 +29,11 @@ class FavoriteItemCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => MovieDetailView(imageUrl: posterUrl, index: index),
+            builder: (_) => MovieDetailView(
+              imageUrl: posterUrl,
+              index: index,
+              id: 1,
+            ), //TODO: replace with real ID
           ),
         );
       },

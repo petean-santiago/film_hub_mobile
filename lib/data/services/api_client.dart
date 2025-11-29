@@ -16,6 +16,17 @@ class ApiClient {
         receiveTimeout: const Duration(seconds: 5),
       ),
     );
+
+    dio.interceptors.add(
+      LogInterceptor(
+        request: true,
+        requestBody: true,
+        requestHeader: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+      ),
+    );
   }
 
   Future<Response> get(String path, {Map<String, dynamic>? query}) async {

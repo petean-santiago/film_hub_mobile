@@ -14,18 +14,6 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final List<String> filters = ["Trending", "Popular", "Top Rated", "Upcoming"];
-  final movieService = MovieService(ApiClient());
-
-  @override
-  void initState() {
-    super.initState();
-    loadPopular();
-  }
-
-  void loadPopular() async {
-    final movies = await movieService.getPopularMovies();
-    print(movies.results[0].title);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +29,7 @@ class _HomeViewState extends State<HomeView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 10),
-                  MovieCarousel(
-                    imageUrls: const [
-                      'https://upload.wikimedia.org/wikipedia/en/thumb/d/db/The_Matrix.png/250px-The_Matrix.png',
-                      'https://m.media-amazon.com/images/I/811lT7khIrL._AC_UF894,1000_QL80_.jpg',
-                      'https://i.ebayimg.com/images/g/gawAAOSwfvVkgw0K/s-l1200.jpg',
-                      'https://m.media-amazon.com/images/I/81pj4tb6LEL._AC_UF894,1000_QL80_.jpg',
-                      'https://m.media-amazon.com/images/I/91vIHsL-zjL._AC_UF894,1000_QL80_.jpg',
-                    ],
-                  ),
+                  MovieCarousel(),
                   Transform.translate(
                     offset: const Offset(0, -120),
                     child: Column(

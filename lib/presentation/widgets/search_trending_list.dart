@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../viewmodel/search/search_viewmodel.dart';
+import '../../application/viewmodel/search/search_viewmodel.dart';
 
 class SearchTrendingList extends ConsumerWidget {
   const SearchTrendingList({super.key});

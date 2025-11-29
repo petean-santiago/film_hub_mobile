@@ -1,10 +1,18 @@
-import '../models/movie_list_response.dart';
+import 'package:film_hub/data/models/movie/movie_model.dart';
+
+import '../models/movie/movie_detail_model.dart';
+import '../models/movie/movie_list_response.dart';
 import 'api_client.dart';
 
 class MovieService {
   final ApiClient apiClient;
 
   MovieService(this.apiClient);
+
+  Future<MovieDetailModel> getMovie(int id) async {
+    final response = await apiClient.get('/movie/$id');
+    return MovieDetailModel.fromJson(response.data);
+  }
 
   Future<MovieListResponse> getPopularMovies({int page = 1}) async {
     final response = await apiClient.get(
@@ -14,8 +22,27 @@ class MovieService {
     return MovieListResponse.fromJson(response.data);
   }
 
-  Future<MovieListResponse> getNowPlayingMovies() async {
-    final response = await apiClient.get('/movie/now_playing');
+  Future<MovieListResponse> getNowPlayingMovies({int page = 1}) async {
+    final response = await apiClient.get(
+      '/movie/now_playing',
+      query: {'page': page},
+    );
+    return MovieListResponse.fromJson(response.data);
+  }
+
+  Future<MovieListResponse> getTopRatedMovies({int page = 1}) async {
+    final response = await apiClient.get(
+      '/movie/top_rated',
+      query: {'page': page},
+    );
+    return MovieListResponse.fromJson(response.data);
+  }
+
+  Future<MovieListResponse> getUpcomingMovies({int page = 1}) async {
+    final response = await apiClient.get(
+      '/movie/upcoming',
+      query: {'page': page},
+    );
     return MovieListResponse.fromJson(response.data);
   }
 }

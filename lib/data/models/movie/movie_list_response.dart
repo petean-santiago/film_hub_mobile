@@ -1,5 +1,5 @@
 import 'package:film_hub/data/models/paginated_response.dart';
-import 'dates_model.dart';
+import '../dates_model.dart';
 import 'movie_model.dart';
 
 class MovieListResponse extends PaginatedResponse<MovieModel> {

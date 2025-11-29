@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../viewmodel/search/search_viewmodel.dart';
+import '../../../application/viewmodel/search/search_viewmodel.dart';
 import '../../widgets/search_result_item.dart';
 import '../../widgets/search_trending_list.dart';
 
