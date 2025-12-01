@@ -2,6 +2,7 @@ import 'package:film_hub/data/models/movie/movie_model.dart';
 
 import '../models/movie/movie_detail_model.dart';
 import '../models/movie/movie_list_response.dart';
+import '../models/movie/movie_video_model.dart';
 import 'api_client.dart';
 
 class MovieService {
@@ -12,6 +13,11 @@ class MovieService {
   Future<MovieDetailModel> getMovie(int id) async {
     final response = await apiClient.get('/movie/$id');
     return MovieDetailModel.fromJson(response.data);
+  }
+
+  Future<MovieVideoResponse> getMovieVideos(int id) async {
+    final response = await apiClient.get('/movie/$id/videos');
+    return MovieVideoResponse.fromJson(response.data);
   }
 
   Future<MovieListResponse> getPopularMovies({int page = 1}) async {

@@ -23,3 +23,11 @@ final movieDetailsProvider = FutureProvider.family.autoDispose((
   final movieService = MovieService(ApiClient());
   return movieService.getMovie(id);
 });
+
+final movieVideosProvider = FutureProvider.family.autoDispose((
+  ref,
+  int id,
+) async {
+  final movieService = MovieService(ApiClient());
+  return movieService.getMovieVideos(id);
+});

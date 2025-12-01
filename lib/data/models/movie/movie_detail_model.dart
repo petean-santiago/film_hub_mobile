@@ -1,7 +1,7 @@
 import 'movie_company_model.dart';
 import 'movie_genre_model.dart';
 import 'movie_production_country_model.dart';
-import '../movie_spoken_language_model.dart';
+import 'movie_spoken_language_model.dart';
 
 class MovieDetailModel {
   final bool adult;
