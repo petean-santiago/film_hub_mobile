@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../../core/constants/movie_category_mapping.dart';
+
 class MovieCategoryList extends StatelessWidget {
   final String categoryTitle;
   final List<String> imageUrls;
@@ -16,14 +18,13 @@ class MovieCategoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
           child: Text(
-            categoryTitle,
+            MovieCategoryMapping.name(categoryTitle),
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,

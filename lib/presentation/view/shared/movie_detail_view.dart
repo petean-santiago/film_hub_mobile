@@ -128,17 +128,9 @@ class MovieDetailView extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 15),
-                        movie.video
-                            ? SizedBox(
-                                width: double.infinity,
-                                child: BlurredPlayTrailerButton(
-                                  onPressed: () {},
-                                ),
-                              )
-                            : SizedBox(),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 25),
                         MovieVideoListWidget(id: id),
+                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Text(

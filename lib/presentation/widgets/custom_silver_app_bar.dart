@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+import '../../core/constants/movie_category_mapping.dart';
+
 class CustomSilverAppBar extends StatefulWidget {
   final List<String> filters;
   final bool showFilters;
@@ -92,7 +94,7 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
                             constraints: const BoxConstraints(minWidth: 30),
                             child: Center(
                               child: Text(
-                                filters[index],
+                                MovieCategoryMapping.name(filters[index]),
                                 style: TextStyle(
                                   color: isSelected
                                       ? Colors.black

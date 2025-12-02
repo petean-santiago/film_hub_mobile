@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:film_hub/config/env/env.dart';
+import 'package:film_hub/core/constants/genre_mapping.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -49,6 +50,7 @@ class _MovieCarouselState extends State<MovieCarousel> {
           final year = movies.results[safeIndex].releaseDate.substring(0, 4);
           final voteAverage = movies.results[safeIndex].voteAverage;
           final id = movies.results[safeIndex].id;
+          final genresIds = movies.results[safeIndex].genreIds;
 
           return Stack(
             alignment: Alignment.center,
@@ -191,45 +193,52 @@ class _MovieCarouselState extends State<MovieCarousel> {
                                   ),
                                   const SizedBox(height: 6),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  Wrap(
+                                    alignment: WrapAlignment.center,
                                     spacing: 5,
+                                    runSpacing: 5,
                                     children: [
-                                      _buildTag("Fantasy"),
-                                      _buildTag("1h 40min"),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.07,
+                                      _buildTag(
+                                        GenreMapping.name(genresIds[0]),
+                                      ),
+                                      genresIds.length > 1
+                                          ? _buildTag(
+                                              GenreMapping.name(genresIds[1]),
+                                            )
+                                          : SizedBox(),
+                                      IntrinsicWidth(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 5,
                                           ),
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          spacing: 5,
-                                          children: [
-                                            Icon(
-                                              FontAwesomeIcons.solidStar,
-                                              size: 14,
-                                              color: Colors.amber,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.07,
                                             ),
-                                            Text(
-                                              double.parse(
-                                                voteAverage.toStringAsFixed(1),
-                                              ).toString(),
-                                              style: TextStyle(
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            spacing: 5,
+                                            children: [
+                                              Icon(
+                                                FontAwesomeIcons.solidStar,
+                                                size: 14,
                                                 color: Colors.amber,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: 0.5,
                                               ),
-                                            ),
-                                          ],
+                                              Text(
+                                                voteAverage.round().toString(),
+                                                style: TextStyle(
+                                                  color: Colors.amber,
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: 0.5,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],

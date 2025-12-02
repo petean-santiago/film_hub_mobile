@@ -11,8 +11,6 @@ class MovieVideoListWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final movieVideosAsyncValue = ref.watch(movieVideosProvider(id));
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     return movieVideosAsyncValue.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -27,18 +25,44 @@ class MovieVideoListWidget extends ConsumerWidget {
         }
 
         return SizedBox(
-          height: screenHeight * 0.25,
+          height: 160,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: youtubeVideos.length,
             padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: youtubeVideos.length,
             itemBuilder: (context, index) {
               final video = youtubeVideos[index];
-              return Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: YoutubeVideoItem(
-                  videoKey: video.key,
-                  width: screenWidth * 0.6,
+              final thumbnailUrl =
+                  "https://img.youtube.com/vi/${video.key}/hqdefault.jpg";
+
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          YoutubePlayerFullscreen(videoKey: video.key),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 250,
+                  margin: const EdgeInsets.only(right: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: NetworkImage(thumbnailUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: const Align(
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.play_circle_fill,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               );
             },
@@ -49,52 +73,40 @@ class MovieVideoListWidget extends ConsumerWidget {
   }
 }
 
-class YoutubeVideoItem extends StatefulWidget {
+class YoutubePlayerFullscreen extends StatefulWidget {
   final String videoKey;
-  final double width;
 
-  const YoutubeVideoItem({
-    super.key,
-    required this.videoKey,
-    required this.width,
-  });
+  const YoutubePlayerFullscreen({super.key, required this.videoKey});
 
   @override
-  State<YoutubeVideoItem> createState() => _YoutubeVideoItemState();
+  State<YoutubePlayerFullscreen> createState() =>
+      _YoutubePlayerFullscreenState();
 }
 
-class _YoutubeVideoItemState extends State<YoutubeVideoItem>
-    with AutomaticKeepAliveClientMixin {
-  late YoutubePlayerController _controller;
+class _YoutubePlayerFullscreenState extends State<YoutubePlayerFullscreen> {
+  late YoutubePlayerController controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = YoutubePlayerController(
+
+    controller = YoutubePlayerController(
       initialVideoId: widget.videoKey,
-      flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
+      flags: const YoutubePlayerFlags(autoPlay: true),
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return SizedBox(
-      width: widget.width,
-      child: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: true,
-        progressIndicatorColor: Colors.red,
-      ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(child: YoutubePlayer(controller: controller)),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
