@@ -11,12 +11,41 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final ScrollController scrollController = ScrollController();
+
   final List<String> filtersKeys = [
     "trending",
     "popular",
     "top_rated",
     "upcoming",
   ];
+
+  final Map<String, GlobalKey> sectionKeys = {
+    "trending": GlobalKey(),
+    "popular": GlobalKey(),
+    "top_rated": GlobalKey(),
+    "upcoming": GlobalKey(),
+  };
+
+  void scrollToCategory(String category) {
+    if (category == 'trending') {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      return;
+    }
+
+    final key = sectionKeys[category];
+    if (key != null && key.currentContext != null) {
+      Scrollable.ensureVisible(
+        key.currentContext!,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,41 +54,46 @@ class _HomeViewState extends State<HomeView> {
       body: ScrollConfiguration(
         behavior: const ScrollBehavior().copyWith(overscroll: false),
         child: CustomScrollView(
+          controller: scrollController,
           slivers: [
-            CustomSilverAppBar(filters: filtersKeys, showFilters: true),
+            CustomSilverAppBar(
+              filters: filtersKeys,
+              showFilters: true,
+              onCategorySelected: scrollToCategory,
+            ),
+
             SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 10),
-                  MovieCarousel(),
+                  const SizedBox(height: 10),
+
+                  MovieCarousel(key: sectionKeys["trending"]),
+
                   Transform.translate(
                     offset: const Offset(0, -50),
                     child: Column(
-                      spacing: 15,
                       children: [
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: filtersKeys.length,
                           itemBuilder: (context, index) {
-                            return filtersKeys[index] != 'trending'
-                                ? MovieCategoryList(
-                                    categoryTitle: filtersKeys[index],
-                                    imageUrls: [
-                                      'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
-                                      'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
-                                      'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
-                                      'https://m.media-amazon.com/images/I/81Bl5RlsLFL._AC_UF894,1000_QL80_.jpg',
-                                    ],
-                                  )
-                                : SizedBox();
+                            final category = filtersKeys[index];
+                            if (category == 'trending') {
+                              return const SizedBox();
+                            }
+                            return Container(
+                              key: sectionKeys[category],
+                              child: MovieCategoryList(categoryTitle: category),
+                            );
                           },
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 50),
+
+                  const SizedBox(height: 50),
                 ],
               ),
             ),

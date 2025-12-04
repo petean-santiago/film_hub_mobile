@@ -6,4 +6,6 @@ class Env {
   static String get baseUrl => dotenv.env['TMDB_BASE_URL'] ?? '';
 
   static String get imageBaseUrl => dotenv.env['IMAGE_BASE_URL'] ?? '';
+
+  static String get accountID => dotenv.env['ACCOUNT_ID'] ?? '';
 }

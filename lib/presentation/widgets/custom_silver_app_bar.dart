@@ -6,11 +6,13 @@ import '../../core/constants/movie_category_mapping.dart';
 class CustomSilverAppBar extends StatefulWidget {
   final List<String> filters;
   final bool showFilters;
+  final void Function(String category)? onCategorySelected;
 
   const CustomSilverAppBar({
     super.key,
     required this.filters,
     required this.showFilters,
+    this.onCategorySelected,
   });
 
   @override
@@ -30,6 +32,7 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
       snap: true,
       elevation: 0,
       backgroundColor: Colors.transparent,
+
       flexibleSpace: ClipRRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -66,7 +69,12 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
                       final isSelected = selectedIndex == index;
 
                       return GestureDetector(
-                        onTap: () => setState(() => selectedIndex = index),
+                        onTap: () {
+                          setState(() => selectedIndex = index);
+                          final category = filters[index];
+                          widget.onCategorySelected?.call(category);
+                        },
+
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(
