@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import '../../../data/models/movie/movie_model.dart';
+import '../../../data/services/api_client.dart';
+import '../../../data/services/movie_service.dart';
 
 class SearchState {
   final String query;
   final bool isLoading;
-  final List<String> results;
+  final List<MovieModel> results;
 
   SearchState({
     this.query = "",
@@ -15,7 +19,7 @@ class SearchState {
   SearchState copyWith({
     String? query,
     bool? isLoading,
-    List<String>? results,
+    List<MovieModel>? results,
   }) {
     return SearchState(
       query: query ?? this.query,
@@ -26,33 +30,45 @@ class SearchState {
 }
 
 class SearchViewModel extends StateNotifier<SearchState> {
-  SearchViewModel() : super(SearchState());
+  final MovieService movieService;
+  Timer? _debounce;
 
-  void onQueryChanged(String newQuery) async {
+  SearchViewModel(this.movieService) : super(SearchState());
+
+  void onQueryChanged(String newQuery) {
     state = state.copyWith(query: newQuery);
+
+    _debounce?.cancel();
 
     if (newQuery.isEmpty) {
       state = state.copyWith(results: [], isLoading: false);
       return;
     }
 
-    state = state.copyWith(isLoading: true);
+    _debounce = Timer(const Duration(milliseconds: 400), () async {
+      state = state.copyWith(isLoading: true);
 
-    await Future.delayed(const Duration(milliseconds: 400));
+      try {
+        final response = await movieService.searchMovies(query: newQuery);
+        state = state.copyWith(isLoading: false, results: response.results);
+      } catch (e) {
+        state = state.copyWith(isLoading: false, results: []);
+      }
+    });
+  }
 
-    state = state.copyWith(
-      isLoading: false,
-      results: List.generate(
-        6,
-        (index) => "Movie Result ${index + 1} for '$newQuery'",
-      ),
-    );
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 }
 
+final movieServiceProvider = Provider((ref) => MovieService(ApiClient()));
+
 final searchViewModelProvider =
     StateNotifierProvider<SearchViewModel, SearchState>(
-      (ref) => SearchViewModel(),
+      (ref) => SearchViewModel(ref.read(movieServiceProvider)),
     );
 
 final searchTextControllerProvider = Provider<TextEditingController>((ref) {

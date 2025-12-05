@@ -1,16 +1,17 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+import '../../core/constants/genre_mapping.dart';
 import '../../core/constants/movie_category_mapping.dart';
 
 class CustomSilverAppBar extends StatefulWidget {
-  final List<String> filters;
+  final List<String>? filters;
   final bool showFilters;
   final void Function(String category)? onCategorySelected;
 
   const CustomSilverAppBar({
     super.key,
-    required this.filters,
+    this.filters,
     required this.showFilters,
     this.onCategorySelected,
   });
@@ -25,7 +26,16 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
   @override
   Widget build(BuildContext context) {
     final showFilters = widget.showFilters;
-    final filters = widget.filters;
+
+    final bool usingExternalFilters = widget.filters != null;
+
+    final List<MapEntry<String, String>> filters = usingExternalFilters
+        ? widget.filters!
+              .map((f) => MapEntry(f, MovieCategoryMapping.name(f)))
+              .toList()
+        : GenreMapping.genres.entries
+              .map((e) => MapEntry(e.key.toString(), e.value))
+              .toList();
 
     return SliverAppBar(
       floating: true,
@@ -38,10 +48,10 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.75),
+              color: Colors.black.withValues(alpha: 0.0),
               border: Border(
                 bottom: BorderSide(
-                  color: Colors.black.withValues(alpha: 0.55),
+                  color: Colors.black.withValues(alpha: 0.0),
                   width: 1,
                 ),
               ),
@@ -55,7 +65,7 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
 
-      bottom: showFilters
+      bottom: showFilters && filters.isNotEmpty
           ? PreferredSize(
               preferredSize: const Size.fromHeight(50),
               child: Padding(
@@ -65,14 +75,18 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
                   child: ListView.separated(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     scrollDirection: Axis.horizontal,
+                    itemCount: filters.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
                     itemBuilder: (context, index) {
                       final isSelected = selectedIndex == index;
+
+                      final filterId = filters[index].key;
+                      final filterName = filters[index].value;
 
                       return GestureDetector(
                         onTap: () {
                           setState(() => selectedIndex = index);
-                          final category = filters[index];
-                          widget.onCategorySelected?.call(category);
+                          widget.onCategorySelected?.call(filterId);
                         },
 
                         child: AnimatedContainer(
@@ -102,7 +116,7 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
                             constraints: const BoxConstraints(minWidth: 30),
                             child: Center(
                               child: Text(
-                                MovieCategoryMapping.name(filters[index]),
+                                filterName,
                                 style: TextStyle(
                                   color: isSelected
                                       ? Colors.black
@@ -115,8 +129,6 @@ class _CustomSilverAppBarState extends State<CustomSilverAppBar> {
                         ),
                       );
                     },
-                    separatorBuilder: (_, __) => const SizedBox(width: 8),
-                    itemCount: filters.length,
                   ),
                 ),
               ),

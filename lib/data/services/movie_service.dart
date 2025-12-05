@@ -51,4 +51,16 @@ class MovieService {
     );
     return MovieListResponse.fromJson(response.data);
   }
+
+  Future<MovieListResponse> searchMovies({
+    required String query,
+    int page = 1,
+    bool includeAdult = false,
+  }) async {
+    final response = await apiClient.get(
+      '/search/movie',
+      query: {'query': query, 'page': page, 'include_adult': includeAdult},
+    );
+    return MovieListResponse.fromJson(response.data);
+  }
 }

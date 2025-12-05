@@ -2,18 +2,21 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../core/constants/genre_mapping.dart';
 import '../view/shared/movie_detail_view.dart';
 
 class FavoriteItemCard extends StatelessWidget {
   final int index;
+  final int id;
   final String title;
   final String posterUrl;
-  final List<String> genres;
+  final List<int> genres;
   final String description;
 
   const FavoriteItemCard({
     super.key,
     required this.index,
+    required this.id,
     required this.title,
     required this.posterUrl,
     required this.genres,
@@ -32,7 +35,7 @@ class FavoriteItemCard extends StatelessWidget {
             builder: (_) => MovieDetailView(
               imageUrl: posterUrl,
               index: index,
-              id: 1,
+              id: id,
             ), //TODO: replace with real ID
           ),
         );
@@ -94,16 +97,6 @@ class FavoriteItemCard extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Icon(
-                                FontAwesomeIcons.solidHeart,
-                                size: 18,
-                                color: isFavorite
-                                    ? Colors.redAccent
-                                    : Colors.white70,
-                              ),
-                            ),
                           ],
                         ),
 
@@ -113,7 +106,7 @@ class FavoriteItemCard extends StatelessWidget {
                         Text(
                           description,
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.75),
+                            color: Colors.white.withValues(alpha: 0.75),
                             fontSize: 14,
                             height: 1.3,
                           ),
@@ -123,11 +116,10 @@ class FavoriteItemCard extends StatelessWidget {
 
                         const SizedBox(height: 10),
 
-                        /// GENRES – GLASSY STYLE TAGS
                         Wrap(
                           spacing: 6,
                           runSpacing: 6,
-                          children: genres.map((g) {
+                          children: genres.take(2).map((g) {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               child: BackdropFilter(
@@ -150,7 +142,7 @@ class FavoriteItemCard extends StatelessWidget {
                                     ),
                                   ),
                                   child: Text(
-                                    g,
+                                    GenreMapping.name(g),
                                     style: const TextStyle(
                                       fontSize: 11,
                                       color: Colors.white,

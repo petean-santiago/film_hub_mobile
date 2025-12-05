@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../application/providers/shared/movie_detail_provider.dart';
 import '../../../core/shared/global_functions.dart';
-import '../../widgets/blurred_play_button.dart';
 import '../../widgets/movie_video_list.dart';
 
 class MovieDetailView extends ConsumerWidget {
@@ -22,7 +21,7 @@ class MovieDetailView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final movieDetailAsyncValue = ref.watch(movieDetailsProvider(id));
-    final isFavorite = ref.watch(favoriteMovieProvider);
+    final isFavorite = ref.watch(favoriteMovieProvider(id));
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -83,9 +82,11 @@ class MovieDetailView extends ConsumerWidget {
 
                         const SizedBox(height: 10),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Wrap(
                           spacing: 8,
+                          runSpacing: 8,
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             _detailTag(movie.releaseDate.substring(0, 4)),
                             _detailTag(movie.genres[0].name),
@@ -96,7 +97,7 @@ class MovieDetailView extends ConsumerWidget {
                             GestureDetector(
                               onTap: () {
                                 ref
-                                    .read(favoriteMovieProvider.notifier)
+                                    .read(favoriteMovieProvider(id).notifier)
                                     .toggleFavorite();
                               },
                               child: Icon(

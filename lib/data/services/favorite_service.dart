@@ -9,7 +9,7 @@ class FavoriteService {
 
   Future<MovieListResponse> getFavoriteMovies({int page = 1}) async {
     final response = await apiClient.get(
-      '/account/${Env.accountID}/favorites/movies',
+      '/account/${Env.accountID}/favorite/movies',
       query: {'page': page},
     );
     return MovieListResponse.fromJson(response.data);
@@ -29,5 +29,10 @@ class FavoriteService {
     );
     final statusCode = response.data["status_code"];
     return statusCode == 1 || statusCode == 12 || statusCode == 13;
+  }
+
+  Future<bool> isMovieFavorite(int movieId) async {
+    final response = await apiClient.get('/movie/$movieId/account_states');
+    return response.data['favorite'] ?? false;
   }
 }

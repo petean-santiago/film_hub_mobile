@@ -69,7 +69,7 @@ class SearchView extends ConsumerWidget {
                     physics: const BouncingScrollPhysics(),
                     itemBuilder: (_, index) {
                       final movie = state.results[index];
-                      return SearchResultItem(movie: movie);
+                      return SearchResultItem(movie: movie, index: index);
                     },
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
                     itemCount: state.results.length,

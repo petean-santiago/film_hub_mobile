@@ -1,6 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:film_hub/presentation/widgets/custom_silver_app_bar.dart';
+import '../../../config/env/env.dart';
+import '../../../data/models/movie/movie_list_response.dart';
+import '../../../data/services/api_client.dart';
+import '../../../data/services/favorite_service.dart';
 import '../../widgets/favorite_item_card.dart';
 
 class FavoritesView extends StatefulWidget {
@@ -11,24 +15,15 @@ class FavoritesView extends StatefulWidget {
 }
 
 class _FavoritesViewState extends State<FavoritesView> {
-  final List<Map<String, dynamic>> favorites = [
-    {
-      'title': 'Breaking Bad',
-      'poster':
-          'https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg',
-      'genres': ['Drama', 'Crime'],
-      'description': 'A chemistry teacher turned methamphetamine producer.',
-    },
-    {
-      'title': 'Spirited Away',
-      'poster':
-          'https://image.tmdb.org/t/p/w500/oRvMaJOmapypFUcQqpgHMZA6qL9.jpg',
-      'genres': ['Fantasy', 'Animation'],
-      'description': 'A girl enters a magical world ruled by spirits.',
-    },
-  ];
+  final favoriteService = FavoriteService(ApiClient());
+  late Future<MovieListResponse> _favoritesFuture;
+  int selectedGenreId = 0;
 
-  final List<String> filters = ["All", "Movies", "Series"];
+  @override
+  void initState() {
+    super.initState();
+    _favoritesFuture = favoriteService.getFavoriteMovies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +35,7 @@ class _FavoritesViewState extends State<FavoritesView> {
             child: Transform.rotate(
               angle: 3.14159,
               child: Image.network(
-                "https://t3.ftcdn.net/jpg/06/52/50/84/360_F_652508416_PMVJMXZMgnpHmlUIoEnV6xlSTojSwiQ3.jpg",
+                "https://64.media.tumblr.com/17c959d20b8657d699efeea44760ab02/tumblr_petzq2fidq1uzwgsuo1_400.gif",
                 fit: BoxFit.cover,
               ),
             ),
@@ -48,40 +43,109 @@ class _FavoritesViewState extends State<FavoritesView> {
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-              child: Container(color: Colors.black.withValues(alpha: 0.55)),
+              child: Container(color: Colors.black.withValues(alpha: 0.45)),
             ),
           ),
 
-          ScrollConfiguration(
-            behavior: const ScrollBehavior().copyWith(overscroll: false),
-            child: CustomScrollView(
-              slivers: [
-                CustomSilverAppBar(filters: filters, showFilters: true),
+          FutureBuilder<MovieListResponse>(
+            future: _favoritesFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              }
 
-                SliverPadding(
-                  padding: const EdgeInsets.only(bottom: 90),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final item = favorites[index];
-
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        child: FavoriteItemCard(
-                          index: index,
-                          title: item['title'],
-                          posterUrl: item['poster'],
-                          genres: List<String>.from(item['genres']),
-                          description: item['description'] ?? "",
-                        ),
-                      );
-                    }, childCount: favorites.length),
+              if (!snapshot.hasData || snapshot.data!.results.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "You don't have any favorites yet",
+                    style: TextStyle(color: Colors.white70),
                   ),
+                );
+              }
+
+              final allFavorites = snapshot.data!.results;
+
+              final favorites = selectedGenreId == 0
+                  ? allFavorites
+                  : allFavorites
+                        .where(
+                          (movie) => movie.genreIds.contains(selectedGenreId),
+                        )
+                        .toList();
+
+              return ScrollConfiguration(
+                behavior: const ScrollBehavior().copyWith(overscroll: false),
+                child: CustomScrollView(
+                  slivers: [
+                    CustomSilverAppBar(
+                      showFilters: true,
+                      onCategorySelected: (genreId) {
+                        setState(() {
+                          selectedGenreId = int.tryParse(genreId)!;
+                        });
+                      },
+                    ),
+                    favorites.isEmpty
+                        ? SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 120),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.local_movies_outlined,
+                                    size: 64,
+                                    color: Colors.white38,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "No movies found in this category",
+                                    //TODO: improve placeholder
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.75,
+                                      ),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : SliverPadding(
+                            padding: const EdgeInsets.only(bottom: 90),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final movie = favorites[index];
+
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  child: FavoriteItemCard(
+                                    id: movie.id,
+                                    index: index,
+                                    title: movie.title,
+                                    posterUrl:
+                                        '${Env.imageBaseUrl}/w500${movie.posterPath}',
+                                    genres: movie.genreIds,
+                                    description: movie.overview,
+                                  ),
+                                );
+                              }, childCount: favorites.length),
+                            ),
+                          ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),
