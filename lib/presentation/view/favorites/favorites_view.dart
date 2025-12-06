@@ -4,8 +4,9 @@ import 'package:film_hub/presentation/widgets/custom_silver_app_bar.dart';
 import '../../../config/env/env.dart';
 import '../../../data/models/movie/movie_list_response.dart';
 import '../../../data/services/api_client.dart';
-import '../../../data/services/favorite_service.dart';
+import '../../../data/services/user_service.dart';
 import '../../widgets/favorite_item_card.dart';
+import '../../widgets/skeletons/favorite_view_skeleton.dart';
 
 class FavoritesView extends StatefulWidget {
   const FavoritesView({super.key});
@@ -15,7 +16,7 @@ class FavoritesView extends StatefulWidget {
 }
 
 class _FavoritesViewState extends State<FavoritesView> {
-  final favoriteService = FavoriteService(ApiClient());
+  final favoriteService = UserService(ApiClient());
   late Future<MovieListResponse> _favoritesFuture;
   int selectedGenreId = 0;
 
@@ -51,9 +52,7 @@ class _FavoritesViewState extends State<FavoritesView> {
             future: _favoritesFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                );
+                return const FavoritesViewSkeleton();
               }
 
               if (!snapshot.hasData || snapshot.data!.results.isEmpty) {

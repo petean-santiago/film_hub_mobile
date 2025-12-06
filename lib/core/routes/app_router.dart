@@ -6,6 +6,8 @@ import 'package:film_hub/presentation/view/search/search_view.dart';
 import 'package:film_hub/presentation/view/favorites/favorites_view.dart';
 import 'package:film_hub/presentation/view/profile/profile_view.dart';
 
+import '../../presentation/view/shared/movie_detail_view.dart';
+
 int lastIndex = 0;
 
 int getIndexFromPath(String location) {
@@ -115,6 +117,17 @@ final appRouter = GoRouter(
             );
             lastIndex = currentIndex;
             return page;
+          },
+        ),
+        GoRoute(
+          path: '/movie',
+          builder: (context, state) {
+            final data = state.extra as Map<String, dynamic>;
+            return MovieDetailView(
+              imageUrl: data['imageUrl'],
+              index: data['index'],
+              id: data['id'],
+            );
           },
         ),
       ],

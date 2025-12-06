@@ -1,11 +1,20 @@
 import 'package:film_hub/config/env/env.dart';
+import 'package:film_hub/data/models/user/user_model.dart';
 import '../models/movie/movie_list_response.dart';
 import 'api_client.dart';
 
-class FavoriteService {
+class UserService {
   final ApiClient apiClient;
 
-  FavoriteService(this.apiClient);
+  UserService(this.apiClient);
+
+  Future<UserModel> getUserDetails({int page = 1}) async {
+    final response = await apiClient.get(
+      '/account/${Env.accountID}',
+      query: {'page': page},
+    );
+    return UserModel.fromJson(response.data);
+  }
 
   Future<MovieListResponse> getFavoriteMovies({int page = 1}) async {
     final response = await apiClient.get(
@@ -34,5 +43,13 @@ class FavoriteService {
   Future<bool> isMovieFavorite(int movieId) async {
     final response = await apiClient.get('/movie/$movieId/account_states');
     return response.data['favorite'] ?? false;
+  }
+
+  Future<MovieListResponse> getRatedMovies() async {
+    final response = await apiClient.get(
+      "/account/${Env.accountID}/rated/movies",
+      query: {"language": "en-US", "sort_by": "created_at.desc"},
+    );
+    return MovieListResponse.fromJson(response.data);
   }
 }

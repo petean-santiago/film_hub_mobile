@@ -1,6 +1,6 @@
 class MovieCategoryMapping {
   static const Map<String, String> categories = {
-    "trending": 'Trending',
+    "now_playing": 'Trending',
     "popular": 'Popular',
     "top_rated": 'Top rated',
     "upcoming": 'Upcoming',

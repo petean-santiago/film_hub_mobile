@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../application/providers/shared/movie_detail_provider.dart';
 import '../../../core/shared/global_functions.dart';
 import '../../widgets/movie_video_list.dart';
+import '../../widgets/skeletons/movie_detail_skeleton.dart';
 
 class MovieDetailView extends ConsumerWidget {
   final String imageUrl;
@@ -26,7 +27,7 @@ class MovieDetailView extends ConsumerWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return movieDetailAsyncValue.when(
-      loading: () => Center(child: const Text('loading')),
+      loading: () => const MovieDetailSkeleton(),
       error: (error, stack) => Center(child: Text(error.toString())),
       data: (movie) {
         return Scaffold(

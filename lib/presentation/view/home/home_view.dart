@@ -14,21 +14,21 @@ class _HomeViewState extends State<HomeView> {
   final ScrollController scrollController = ScrollController();
 
   final List<String> filtersKeys = [
-    "trending",
+    "now_playing",
     "popular",
     "top_rated",
     "upcoming",
   ];
 
   final Map<String, GlobalKey> sectionKeys = {
-    "trending": GlobalKey(),
+    "now_playing": GlobalKey(),
     "popular": GlobalKey(),
     "top_rated": GlobalKey(),
     "upcoming": GlobalKey(),
   };
 
   void scrollToCategory(String category) {
-    if (category == 'trending') {
+    if (category == 'now_playing') {
       scrollController.animateTo(
         0,
         duration: const Duration(milliseconds: 500),
@@ -68,7 +68,7 @@ class _HomeViewState extends State<HomeView> {
                 children: [
                   const SizedBox(height: 10),
 
-                  MovieCarousel(key: sectionKeys["trending"]),
+                  MovieCarousel(key: sectionKeys["now_playing"]),
 
                   Transform.translate(
                     offset: const Offset(0, -50),
@@ -80,7 +80,7 @@ class _HomeViewState extends State<HomeView> {
                           itemCount: filtersKeys.length,
                           itemBuilder: (context, index) {
                             final category = filtersKeys[index];
-                            if (category == 'trending') {
+                            if (category == 'now_playing') {
                               return const SizedBox();
                             }
                             return Container(

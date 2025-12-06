@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/genre_mapping.dart';
-import '../view/shared/movie_detail_view.dart';
 
 class FavoriteItemCard extends StatelessWidget {
   final int index;
@@ -25,19 +25,11 @@ class FavoriteItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isFavorite = false;
-
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => MovieDetailView(
-              imageUrl: posterUrl,
-              index: index,
-              id: id,
-            ), //TODO: replace with real ID
-          ),
+        context.push(
+          '/movie',
+          extra: {'imageUrl': posterUrl, 'index': index, 'id': id},
         );
       },
       child: ClipRRect(

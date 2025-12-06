@@ -20,17 +20,17 @@ class MovieService {
     return MovieVideoResponse.fromJson(response.data);
   }
 
-  Future<MovieListResponse> getPopularMovies({int page = 1}) async {
+  Future<MovieListResponse> getNowPlayingMovies({int page = 1}) async {
     final response = await apiClient.get(
-      '/movie/popular',
+      '/movie/now_playing',
       query: {'page': page},
     );
     return MovieListResponse.fromJson(response.data);
   }
 
-  Future<MovieListResponse> getNowPlayingMovies({int page = 1}) async {
+  Future<MovieListResponse> getPopularMovies({int page = 1}) async {
     final response = await apiClient.get(
-      '/movie/now_playing',
+      '/movie/popular',
       query: {'page': page},
     );
     return MovieListResponse.fromJson(response.data);

@@ -1,22 +1,20 @@
+import 'package:film_hub/data/services/user_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/services/api_client.dart';
-import '../../../data/services/favorite_service.dart';
 import '../../../data/services/movie_service.dart';
 
-final favoriteServiceProvider = Provider<FavoriteService>((ref) {
-  return FavoriteService(ApiClient());
+final favoriteServiceProvider = Provider<UserService>((ref) {
+  return UserService(ApiClient());
 });
 
 class MovieNotifier extends StateNotifier<bool> {
-  final FavoriteService _favoriteService;
+  final UserService _favoriteService;
   final int _movieId;
 
-  MovieNotifier({
-    required FavoriteService favoriteService,
-    required int movieId,
-  }) : _favoriteService = favoriteService,
-       _movieId = movieId,
-       super(false) {
+  MovieNotifier({required UserService favoriteService, required int movieId})
+    : _favoriteService = favoriteService,
+      _movieId = movieId,
+      super(false) {
     _loadInitialStatus();
   }
 

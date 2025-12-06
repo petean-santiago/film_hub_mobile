@@ -63,14 +63,3 @@ class SearchViewModel extends StateNotifier<SearchState> {
     super.dispose();
   }
 }
-
-final movieServiceProvider = Provider((ref) => MovieService(ApiClient()));
-
-final searchViewModelProvider =
-    StateNotifierProvider<SearchViewModel, SearchState>(
-      (ref) => SearchViewModel(ref.read(movieServiceProvider)),
-    );
-
-final searchTextControllerProvider = Provider<TextEditingController>((ref) {
-  return TextEditingController();
-});
