@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../data/models/movie/movie_list_response.dart';
 import '../../application/providers/movie_carousel_provider.dart';
+import 'build_tag.dart';
 
 class MovieCarousel extends ConsumerStatefulWidget {
   const MovieCarousel({super.key});
@@ -86,101 +87,137 @@ class _MovieCarouselState extends ConsumerState<MovieCarousel>
 
                     return Column(
                       children: [
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.easeOut,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 12,
-                          ),
-                          child: AspectRatio(
-                            aspectRatio: 2 / 3,
-                            child: Stack(
-                              children: [
-                                GestureDetector(
+                        AnimatedScale(
+                          scale: isActive ? 1.0 : 0.85,
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeOutBack,
+                          child: AnimatedOpacity(
+                            opacity: isActive ? 1.0 : 0.4,
+                            duration: const Duration(milliseconds: 300),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 12,
+                              ),
+                              child: AspectRatio(
+                                aspectRatio: 2 / 3,
+                                child: GestureDetector(
                                   onTap: () {
                                     context.push(
                                       '/movie',
                                       extra: {
-                                        'imageUrl': backgroundImage,
+                                        'imageUrl': poster,
                                         'index': index,
-                                        'id': id,
+                                        'id': movies.results[index].id,
                                       },
                                     );
                                   },
                                   child: Hero(
                                     tag: 'image-poster-$index',
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(20),
                                       child: Image.network(
                                         poster,
                                         fit: BoxFit.cover,
                                         width: double.infinity,
+                                        loadingBuilder:
+                                            (context, child, loading) {
+                                              if (loading == null) return child;
+
+                                              return AnimatedOpacity(
+                                                opacity: 0.3,
+                                                duration: const Duration(
+                                                  milliseconds: 300,
+                                                ),
+                                                child: child,
+                                              );
+                                            },
                                       ),
                                     ),
                                   ),
                                 ),
-
-                                if (!isActive)
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(
-                                        milliseconds: 250,
-                                      ),
-                                      color: Colors.black.withOpacity(0.5),
-                                    ),
-                                  ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
 
-                        if (isActive)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: Column(
-                              children: [
-                                Text(
-                                  year,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 550),
+                          switchInCurve: Curves.easeOutExpo,
+                          switchOutCurve: Curves.easeInExpo,
+                          transitionBuilder: (child, animation) {
+                            final fade = CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeOut,
+                            );
+
+                            final slide =
+                                Tween<Offset>(
+                                  begin: const Offset(0, 0.25),
+                                  end: Offset.zero,
+                                ).animate(
+                                  CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOutQuart,
                                   ),
-                                ),
+                                );
 
-                                Text(
-                                  title,
-                                  maxLines: 2,
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 6),
-
-                                Wrap(
-                                  alignment: WrapAlignment.center,
-                                  spacing: 5,
-                                  runSpacing: 5,
-                                  children: [
-                                    _buildTag(GenreMapping.name(genresIds[0])),
-
-                                    if (genresIds.length > 1)
-                                      _buildTag(
-                                        GenreMapping.name(genresIds[1]),
+                            return FadeTransition(
+                              opacity: fade,
+                              child: SlideTransition(
+                                position: slide,
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: isActive
+                              ? Padding(
+                                  key: ValueKey(index),
+                                  padding: const EdgeInsets.only(top: 12),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        year,
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 14,
+                                        ),
                                       ),
-
-                                    _buildRating(voteAverage),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                                      Text(
+                                        title,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Wrap(
+                                        alignment: WrapAlignment.center,
+                                        spacing: 5,
+                                        runSpacing: 5,
+                                        children: [
+                                          if (genresIds.isNotEmpty)
+                                            buildTag(
+                                              GenreMapping.name(
+                                                genresIds.first,
+                                              ),
+                                            ),
+                                          if (genresIds.length > 1)
+                                            buildTag(
+                                              GenreMapping.name(genresIds[1]),
+                                            ),
+                                          _buildRating(voteAverage),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
                       ],
                     );
                   },
@@ -201,24 +238,6 @@ class _MovieCarouselState extends ConsumerState<MovieCarousel>
           ],
         );
       },
-    );
-  }
-
-  Widget _buildTag(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
     );
   }
 

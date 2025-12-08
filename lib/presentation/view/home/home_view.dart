@@ -71,7 +71,7 @@ class _HomeViewState extends State<HomeView> {
                   MovieCarousel(key: sectionKeys["now_playing"]),
 
                   Transform.translate(
-                    offset: const Offset(0, -50),
+                    offset: const Offset(0, 0),
                     child: Column(
                       children: [
                         ListView.builder(
@@ -93,7 +93,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 105),
                 ],
               ),
             ),

@@ -65,12 +65,15 @@ class SearchView extends ConsumerWidget {
                   child: CircularProgressIndicator(color: Colors.white),
                 )
               : Padding(
-                  padding: const EdgeInsets.only(bottom: 60.0),
+                  padding: const EdgeInsets.only(bottom: 75.0),
                   child: ListView.separated(
                     physics: const BouncingScrollPhysics(),
                     itemBuilder: (_, index) {
                       final movie = state.results[index];
-                      return SearchResultItem(movie: movie, index: index);
+                      return AnimatedSearchResultItem(
+                        index: index,
+                        child: SearchResultItem(movie: movie, index: index),
+                      );
                     },
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
                     itemCount: state.results.length,
@@ -78,6 +81,52 @@ class SearchView extends ConsumerWidget {
                 ),
         ),
       ),
+    );
+  }
+}
+
+class AnimatedSearchResultItem extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const AnimatedSearchResultItem({
+    super.key,
+    required this.index,
+    required this.child,
+  });
+
+  @override
+  State<AnimatedSearchResultItem> createState() =>
+      _AnimatedSearchResultItemState();
+}
+
+class _AnimatedSearchResultItemState extends State<AnimatedSearchResultItem> {
+  double _value = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 40 * widget.index), () {
+      if (mounted) setState(() => _value = 1);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: _value),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 20),
+            child: Transform.scale(scale: 0.95 + (value * 0.05), child: child),
+          ),
+        );
+      },
+      child: widget.child,
     );
   }
 }

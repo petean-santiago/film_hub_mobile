@@ -78,45 +78,48 @@ class _MovieCategoryListState extends ConsumerState<MovieCategoryList>
                           '${Env.imageBaseUrl}/w500${movie.posterPath!}';
                       final id = movie.id;
 
-                      return GestureDetector(
-                        onTap: () {
-                          context.push(
-                            '/movie',
-                            extra: {
-                              'imageUrl': backgroundImage,
-                              'index': index,
-                              'id': id,
-                            },
-                          );
-                        },
-                        child: Hero(
-                          tag: 'image-poster-${widget.categoryTitle}-$index',
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: AspectRatio(
-                              aspectRatio: 2 / 3,
-                              child: Image.network(
-                                backgroundImage,
-                                fit: BoxFit.cover,
-                                loadingBuilder: (context, child, progress) =>
-                                    progress == null
-                                    ? child
-                                    : Container(
-                                        color: Colors.grey.shade900,
-                                        child: const Center(
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white,
+                      return _AnimatedMovieItem(
+                        index: index,
+                        child: GestureDetector(
+                          onTap: () {
+                            context.push(
+                              '/movie',
+                              extra: {
+                                'imageUrl': backgroundImage,
+                                'index': index,
+                                'id': id,
+                              },
+                            );
+                          },
+                          child: Hero(
+                            tag: 'image-poster-${widget.categoryTitle}-$index',
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: AspectRatio(
+                                aspectRatio: 2 / 3,
+                                child: Image.network(
+                                  backgroundImage,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (context, child, progress) =>
+                                      progress == null
+                                      ? child
+                                      : Container(
+                                          color: Colors.grey.shade900,
+                                          child: const Center(
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                errorBuilder: (_, __, ___) => Container(
-                                  color: Colors.grey.shade900,
-                                  alignment: Alignment.center,
-                                  child: const Icon(
-                                    Icons.broken_image_rounded,
-                                    color: Colors.white38,
-                                    size: 40,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    color: Colors.grey.shade900,
+                                    alignment: Alignment.center,
+                                    child: const Icon(
+                                      Icons.broken_image_rounded,
+                                      color: Colors.white38,
+                                      size: 40,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -131,6 +134,50 @@ class _MovieCategoryListState extends ConsumerState<MovieCategoryList>
             ),
         ],
       ),
+    );
+  }
+}
+
+class _AnimatedMovieItem extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const _AnimatedMovieItem({required this.index, required this.child});
+
+  @override
+  State<_AnimatedMovieItem> createState() => _AnimatedMovieItemState();
+}
+
+class _AnimatedMovieItemState extends State<_AnimatedMovieItem> {
+  double _value = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration(milliseconds: 20 * widget.index), () {
+      if (mounted) {
+        setState(() => _value = 1);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: _value),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 30),
+            child: Transform.scale(scale: 0.9 + (value * 0.1), child: child),
+          ),
+        );
+      },
+      child: widget.child,
     );
   }
 }

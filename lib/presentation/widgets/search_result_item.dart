@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../config/env/env.dart';
+import '../../core/constants/genre_mapping.dart';
 import '../../data/models/movie/movie_model.dart';
+import 'build_tag.dart';
 import '../view/shared/movie_detail_view.dart';
 
 class SearchResultItem extends StatelessWidget {
@@ -90,9 +92,9 @@ class SearchResultItem extends StatelessWidget {
                     runSpacing: 4,
                     children: [
                       Text(
-                        movie.releaseDate!.split('-').first,
+                        movie.releaseDate.split('-').first,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
+                          color: Colors.white.withValues(alpha: 0.7),
                           fontSize: 14,
                         ),
                       ),
@@ -104,12 +106,25 @@ class SearchResultItem extends StatelessWidget {
                           Text(
                             movie.voteAverage.toStringAsFixed(1),
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
+                              color: Colors.white.withValues(alpha: 0.7),
                               fontSize: 14,
                             ),
                           ),
                         ],
                       ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Wrap(
+                    alignment: WrapAlignment.start,
+                    spacing: 5,
+                    runSpacing: 0,
+                    children: [
+                      if (movie.genreIds.isNotEmpty)
+                        buildTag(GenreMapping.name(movie.genreIds[0])),
+
+                      if (movie.genreIds.length > 1)
+                        buildTag(GenreMapping.name(movie.genreIds[1])),
                     ],
                   ),
                 ],

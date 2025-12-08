@@ -123,19 +123,22 @@ class _FavoritesViewState extends State<FavoritesView> {
                               ) {
                                 final movie = favorites[index];
 
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  child: FavoriteItemCard(
-                                    id: movie.id,
-                                    index: index,
-                                    title: movie.title,
-                                    posterUrl:
-                                        '${Env.imageBaseUrl}/w500${movie.posterPath}',
-                                    genres: movie.genreIds,
-                                    description: movie.overview,
+                                return AnimatedFavoriteItem(
+                                  index: index,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    child: FavoriteItemCard(
+                                      id: movie.id,
+                                      index: index,
+                                      title: movie.title,
+                                      posterUrl:
+                                          '${Env.imageBaseUrl}/w500${movie.posterPath}',
+                                      genres: movie.genreIds,
+                                      description: movie.overview,
+                                    ),
                                   ),
                                 );
                               }, childCount: favorites.length),
@@ -148,6 +151,52 @@ class _FavoritesViewState extends State<FavoritesView> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class AnimatedFavoriteItem extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const AnimatedFavoriteItem({
+    super.key,
+    required this.index,
+    required this.child,
+  });
+
+  @override
+  State<AnimatedFavoriteItem> createState() => _AnimatedFavoriteItemState();
+}
+
+class _AnimatedFavoriteItemState extends State<AnimatedFavoriteItem> {
+  double _value = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration(milliseconds: 30 * widget.index), () {
+      if (mounted) setState(() => _value = 1);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: _value),
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 20),
+            child: Transform.scale(scale: 0.95 + (value * 0.05), child: child),
+          ),
+        );
+      },
+      child: widget.child,
     );
   }
 }
