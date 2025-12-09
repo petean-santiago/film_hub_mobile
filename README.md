@@ -4,6 +4,8 @@
 
 The app uses **The Movie Database (TMDB)** API to fetch real-time movie data, featuring polished animations, custom skeleton loaders, and a fully adaptive experience for both Android and iOS.
 
+This app was created with the objective of practicing my skills and releasing it as open-source so anyone interested can collaborate with improvements and optimizations.
+
 ---
 
 ## 📱 Screenshots
@@ -38,7 +40,6 @@ The app uses **The Movie Database (TMDB)** API to fetch real-time movie data, fe
 - ⭐ **Favorites** — Save your favorite movies for later.
 - 🎨 **Fully Custom UI** — Every screen and component is designed from scratch.
 - ⚡ **Smooth Animations** — Animated lists, transitions, and custom skeleton loaders.
-- 🌙 **Dark Mode** — Clean, modern design with full dark theme support.
 - 🔗 **TMDB Integration** — Data fetched via the TMDB REST API using `dio`.
 
 ---
